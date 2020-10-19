@@ -25,23 +25,23 @@ func (g *NetworkGenerator) Generate() (Values, error) {
 	}
 
 	return Values{
-		"custom.lambda.extensions.network.in":  float64(in),
-		"custom.lambda.extensions.network.out": float64(out),
+		"custom.aws.lambda.extensions.network.in":  float64(in),
+		"custom.aws.lambda.extensions.network.out": float64(out),
 	}, nil
 }
 
 // NetworkGraphDefs ...
 var NetworkGraphDefs = &mackerel.GraphDefsParam{
-	Name:        "custom.lambda.extensions.network",
+	Name:        "custom.aws.lambda.extensions.network",
 	DisplayName: "Network I/O",
 	Unit:        "bytes",
 	Metrics: []*mackerel.GraphDefsMetric{
 		&mackerel.GraphDefsMetric{
-			Name:        "in",
+			Name:        "custom.aws.lambda.extensions.network.in",
 			DisplayName: "In",
 		},
 		&mackerel.GraphDefsMetric{
-			Name:        "out",
+			Name:        "custom.aws.lambda.extensions.network.out",
 			DisplayName: "Out",
 		},
 	},

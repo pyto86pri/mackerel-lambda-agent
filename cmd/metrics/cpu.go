@@ -29,33 +29,33 @@ func (g *CPUGenerator) Generate() (Values, error) {
 	total := float64(curr.Total - prev.Total)
 
 	return Values{
-		"custom.lambda.extensions.cpu.user":   float64((curr.User - prev.User)) * 100.0 / total,
-		"custom.lambda.extensions.cpu.nice":   float64(curr.Nice-prev.Nice) * 100.0 / total,
-		"custom.lambda.extensions.cpu.system": float64(curr.System-prev.System) * 100.0 / total,
-		"custom.lambda.extensions.cpu.idle":   float64(curr.Idle-prev.Idle) * 100.0 / total,
+		"custom.aws.lambda.extensions.cpu.user":   float64((curr.User - prev.User)) * 100.0 / total,
+		"custom.aws.lambda.extensions.cpu.nice":   float64(curr.Nice-prev.Nice) * 100.0 / total,
+		"custom.aws.lambda.extensions.cpu.system": float64(curr.System-prev.System) * 100.0 / total,
+		"custom.aws.lambda.extensions.cpu.idle":   float64(curr.Idle-prev.Idle) * 100.0 / total,
 	}, nil
 }
 
 // CPUGraphDefs ...
 var CPUGraphDefs = &mackerel.GraphDefsParam{
-	Name:        "custom.lambda.extensions.cpu",
+	Name:        "custom.aws.lambda.extensions.cpu",
 	DisplayName: "CPU",
 	Unit:        "percentage",
 	Metrics: []*mackerel.GraphDefsMetric{
 		&mackerel.GraphDefsMetric{
-			Name:        "user",
+			Name:        "custom.aws.lambda.extensions.cpu.user",
 			DisplayName: "User",
 		},
 		&mackerel.GraphDefsMetric{
-			Name:        "nice",
+			Name:        "custom.aws.lambda.extensions.cpu.nice",
 			DisplayName: "Nice",
 		},
 		&mackerel.GraphDefsMetric{
-			Name:        "system",
+			Name:        "custom.aws.lambda.extensions.cpu.system",
 			DisplayName: "System",
 		},
 		&mackerel.GraphDefsMetric{
-			Name:        "idle",
+			Name:        "custom.aws.lambda.extensions.cpu.idle",
 			DisplayName: "Idle",
 		},
 	},

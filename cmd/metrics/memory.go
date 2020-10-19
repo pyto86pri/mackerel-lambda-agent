@@ -16,33 +16,33 @@ func (g *MemoryGenerator) Generate() (Values, error) {
 	}
 
 	return Values{
-		"custom.lambda.extensions.memory.total":  float64(memory.Total),
-		"custom.lambda.extensions.memory.used":   float64(memory.Used),
-		"custom.lambda.extensions.memory.cached": float64(memory.Cached),
-		"custom.lambda.extensions.memory.free":   float64(memory.Free),
+		"custom.aws.lambda.extensions.memory.total":  float64(memory.Total),
+		"custom.aws.lambda.extensions.memory.used":   float64(memory.Used),
+		"custom.aws.lambda.extensions.memory.cached": float64(memory.Cached),
+		"custom.aws.lambda.extensions.memory.free":   float64(memory.Free),
 	}, nil
 }
 
 // MemoryGraphDefs ...
 var MemoryGraphDefs = &mackerel.GraphDefsParam{
-	Name:        "custom.lambda.extensions.memory",
+	Name:        "custom.aws.lambda.extensions.memory",
 	DisplayName: "Memory",
 	Unit:        "bytes",
 	Metrics: []*mackerel.GraphDefsMetric{
 		&mackerel.GraphDefsMetric{
-			Name:        "total",
+			Name:        "custom.aws.lambda.extensions.memory.total",
 			DisplayName: "Total",
 		},
 		&mackerel.GraphDefsMetric{
-			Name:        "used",
+			Name:        "custom.aws.lambda.extensions.memory.used",
 			DisplayName: "Used",
 		},
 		&mackerel.GraphDefsMetric{
-			Name:        "cached",
+			Name:        "custom.aws.lambda.extensions.memory.cached",
 			DisplayName: "Cached",
 		},
 		&mackerel.GraphDefsMetric{
-			Name:        "free",
+			Name:        "custom.aws.lambda.extensions.memory.free",
 			DisplayName: "Free",
 		},
 	},

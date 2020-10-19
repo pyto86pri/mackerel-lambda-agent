@@ -16,27 +16,27 @@ func (g *LoadavgGenerator) Generate() (Values, error) {
 	}
 
 	return Values{
-		"custom.lambda.extensions.loadavg.loadavg1":  loadavg.Loadavg1,
-		"custom.lambda.extensions.loadavg.loadavg5":  loadavg.Loadavg5,
-		"custom.lambda.extensions.loadavg.loadavg15": loadavg.Loadavg15,
+		"custom.aws.lambda.extensions.loadavg.loadavg1":  loadavg.Loadavg1,
+		"custom.aws.lambda.extensions.loadavg.loadavg5":  loadavg.Loadavg5,
+		"custom.aws.lambda.extensions.loadavg.loadavg15": loadavg.Loadavg15,
 	}, nil
 }
 
 // LoadavgGraphDefs ...
 var LoadavgGraphDefs = &mackerel.GraphDefsParam{
-	Name:        "custom.lambda.extensions.loadavg",
+	Name:        "custom.aws.lambda.extensions.loadavg",
 	DisplayName: "Loadavg",
 	Metrics: []*mackerel.GraphDefsMetric{
 		&mackerel.GraphDefsMetric{
-			Name:        "loadavg1",
+			Name:        "custom.aws.lambda.extensions.loadavg.loadavg1",
 			DisplayName: "Loadavg1",
 		},
 		&mackerel.GraphDefsMetric{
-			Name:        "loadavg5",
+			Name:        "custom.aws.lambda.extensions.loadavg.loadavg5",
 			DisplayName: "Loadavg5",
 		},
 		&mackerel.GraphDefsMetric{
-			Name:        "loadavg15",
+			Name:        "custom.aws.lambda.extensions.loadavg.loadavg15",
 			DisplayName: "Loadavg15",
 		},
 	},
