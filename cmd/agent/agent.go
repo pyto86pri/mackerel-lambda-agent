@@ -18,9 +18,8 @@ type Agent struct {
 func New() *Agent {
 	return &Agent{
 		gs: []metrics.Generator{
-			&metrics.CPUGenerator{
-				Interval: 1 * time.Second,
-			},
+			&metrics.CPUGenerator{Interval: 1 * time.Second},
+			&metrics.DiskGenerator{Interval: 1 * time.Second},
 			&metrics.MemoryGenerator{},
 			&metrics.NetworkGenerator{},
 			&metrics.LoadavgGenerator{},
