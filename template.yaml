@@ -9,6 +9,9 @@ Resources:
       CodeUri: ./lambda/
       Handler: app.handler
       Runtime: python3.8
+      Environment:
+        Variables:
+          MACKEREL_API_KEY: "<YOUR_API_KEY>"
       Layers:
         - !Ref Layer
   Layer:
