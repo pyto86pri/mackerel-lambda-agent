@@ -18,8 +18,17 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// MetaData ...
+type MetaData struct {
+	FunctionArn string `json:"functionArn"`
+	Version     string `json:"version"`
+	MemorySize  string `json:"memorySize"`
+}
+
 // App ...
 type App struct {
+	Version          string
+	Revision         string
 	MackerelClient   *mackerel.Client
 	ExtensionsClient *extensions.Client
 	Agent            *agent.Agent
@@ -69,7 +78,20 @@ func (app *App) init() (err error) {
 	}
 	if len(hosts) == 0 {
 		app.hostID, err = app.MackerelClient.CreateHost(&mackerel.CreateHostParam{
-			Name:             functionName,
+			Name: functionName,
+			Meta: mackerel.HostMeta{
+				AgentName:     "mackerel-agent-lambda",
+				AgentVersion:  app.Version,
+				AgentRevision: app.Revision,
+				Cloud: &mackerel.Cloud{
+					Provider: "lambda",
+					MetaData: &MetaData{
+						FunctionArn: functionArn,
+						Version:     os.Getenv("AWS_LAMBDA_FUNCTION_VERSION"),
+						MemorySize:  os.Getenv("AWS_LAMBDA_FUNCTION_MEMORY_SIZE"),
+					},
+				},
+			},
 			CustomIdentifier: functionArn,
 		})
 		if err != nil {

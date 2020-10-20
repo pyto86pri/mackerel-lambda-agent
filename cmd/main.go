@@ -13,7 +13,10 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+var version, revision string
+
 func main() {
+	log.Printf("Starting mackerel-agent-lambda (version:%s, revision:%s)", version, revision)
 	ec, err := extensions.NewClient()
 	if err != nil {
 		log.Fatal("Failed to initialize extensions API client")
@@ -26,6 +29,8 @@ func main() {
 	agent := agent.New()
 	bucket := metrics.NewBucket()
 	app := &app.App{
+		Version:          version,
+		Revision:         revision,
 		MackerelClient:   mc,
 		ExtensionsClient: ec,
 		Agent:            agent,
