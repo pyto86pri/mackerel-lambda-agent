@@ -1,20 +1,22 @@
-# mackerel-agent-lambda
+# [WIP] mackerel-agent-lambda
 
-Mackerel Agent for AWS Lambda.
+A monitoring agent of [Mackerel](https://mackerel.io/) for AWS Lambda.
 
-## Requirements
+This is [AWS Lambda Extensions](https://aws.amazon.com/jp/blogs/compute/introducing-aws-lambda-extensions-in-preview/) provided as AWS Lambda Layers.
 
-* AWS CLI already configured with Administrator permission
-* [Docker installed](https://www.docker.com/community-edition)
-* [Golang](https://golang.org)
-* SAM CLI - [Install the SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html)
+**NOTE: This is experimental and not suitable for production use.**
 
-## Setup process
+- Deploy layer with AWS SAM CLI.
+```console
+$ sam build
+$ sam deploy --guided
+```
+- Set up the layer for Lambda functions which you want to monitor on Mackerel.
+- Configure Mackerel API key as `MACKEREL_API_KEY` in the Lambda functions environment variables.
 
-### Installing dependencies & building the target
-
-### Local development
-
-## Packaging and deployment
-
-### Testing
+## Note
+- AWS Lambda Extensions runs on the same execution environment as Lambda functions. So it can impact function performance.
+- Following are overhead estimations;
+  - CPU overhead          : ?
+  - Memory overhead       : ~70MB (Working on decreasing)
+  - Duration time overhead: ~1msec
