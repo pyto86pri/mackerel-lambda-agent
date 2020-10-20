@@ -3,8 +3,10 @@ package app
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
 	"math"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/pyto86pri/mackerel-agent-lambda/cmd/agent"
@@ -47,6 +49,15 @@ func getAccountID() (string, error) {
 	return *id.Account, nil
 }
 
+func getBootID() (string, error) {
+	content, err := ioutil.ReadFile("/proc/sys/kernel/random/boot_id")
+	if err != nil {
+		return "", err
+	}
+	bootID := strings.TrimRight(string(content), "\r\n")
+	return bootID, nil
+}
+
 func (app *App) init() (err error) {
 	err = app.MackerelClient.CreateGraphDefs([]*mackerel.GraphDefsParam{
 		metrics.CPUGraphDefs,
@@ -62,43 +73,32 @@ func (app *App) init() (err error) {
 	if err != nil {
 		return
 	}
-	region := os.Getenv("AWS_REGION")
-	functionName := os.Getenv("AWS_LAMBDA_FUNCTION_NAME")
-	functionArn := fmt.Sprintf("arn:aws:lambda:%s:%s:function:%s", region, accountID, functionName)
-	hosts, err := app.MackerelClient.FindHosts(&mackerel.FindHostsParam{
-		CustomIdentifier: functionArn,
-		Statuses:         []string{"working", "standby", "maintenance", "poweroff"},
-	})
+	bootID, err := getBootID()
 	if err != nil {
 		return
 	}
-	if len(hosts) > 1 {
-		err = fmt.Errorf("Custom identifier duplicated")
-		return
-	}
-	if len(hosts) == 0 {
-		app.hostID, err = app.MackerelClient.CreateHost(&mackerel.CreateHostParam{
-			Name: functionName,
-			Meta: mackerel.HostMeta{
-				AgentName:     "mackerel-agent-lambda",
-				AgentVersion:  app.Version,
-				AgentRevision: app.Revision,
-				Cloud: &mackerel.Cloud{
-					Provider: "lambda",
-					MetaData: &MetaData{
-						FunctionArn: functionArn,
-						Version:     os.Getenv("AWS_LAMBDA_FUNCTION_VERSION"),
-						MemorySize:  os.Getenv("AWS_LAMBDA_FUNCTION_MEMORY_SIZE"),
-					},
+	region := os.Getenv("AWS_REGION")
+	functionName := os.Getenv("AWS_LAMBDA_FUNCTION_NAME")
+	functionArn := fmt.Sprintf("arn:aws:lambda:%s:%s:function:%s", region, accountID, functionName)
+	// Everytime create new host and retire on shutdown
+	app.hostID, err = app.MackerelClient.CreateHost(&mackerel.CreateHostParam{
+		Name: bootID, // or function name + boot id
+		Meta: mackerel.HostMeta{
+			AgentName:     "mackerel-agent-lambda",
+			AgentVersion:  app.Version,
+			AgentRevision: app.Revision,
+			Cloud: &mackerel.Cloud{
+				Provider: "lambda",
+				MetaData: &MetaData{
+					FunctionArn: functionArn,
+					Version:     os.Getenv("AWS_LAMBDA_FUNCTION_VERSION"),
+					MemorySize:  os.Getenv("AWS_LAMBDA_FUNCTION_MEMORY_SIZE"),
 				},
 			},
-			CustomIdentifier: functionArn,
-		})
-		if err != nil {
-			return
-		}
-	} else {
-		app.hostID = hosts[0].ID
+		},
+	})
+	if err != nil {
+		return
 	}
 	return
 
@@ -197,5 +197,10 @@ func (app *App) Run(ctx context.Context) {
 	go app.flush(ctx, 60*time.Second)
 	app.loop()
 	cancel()
+	err = app.MackerelClient.RetireHost(app.hostID)
+	if err != nil {
+		log.Fatal("Failed to retire")
+	}
+	// TODO: wait for workers
 	os.Exit(0)
 }
