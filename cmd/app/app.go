@@ -49,7 +49,8 @@ func getAccountID() (string, error) {
 	return *id.Account, nil
 }
 
-func getBootID() (string, error) {
+func getEnvironmentID() (string, error) {
+	// XXX: maybe this is not safe
 	content, err := ioutil.ReadFile("/proc/sys/kernel/random/boot_id")
 	if err != nil {
 		return "", err
@@ -73,7 +74,8 @@ func (app *App) init() (err error) {
 	if err != nil {
 		return
 	}
-	bootID, err := getBootID()
+	// AWS Lambda execution environment id
+	environmentID, err := getEnvironmentID()
 	if err != nil {
 		return
 	}
@@ -82,7 +84,7 @@ func (app *App) init() (err error) {
 	functionArn := fmt.Sprintf("arn:aws:lambda:%s:%s:function:%s", region, accountID, functionName)
 	// Everytime create new host and retire on shutdown
 	app.hostID, err = app.MackerelClient.CreateHost(&mackerel.CreateHostParam{
-		Name: bootID, // or function name + boot id
+		Name: environmentID, // or function name + environment id
 		Meta: mackerel.HostMeta{
 			AgentName:     "mackerel-agent-lambda",
 			AgentVersion:  app.Version,
