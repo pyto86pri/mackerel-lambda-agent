@@ -2,7 +2,6 @@ package config
 
 import (
 	"fmt"
-	"io/ioutil"
 	"net/url"
 	"os"
 	"strings"
@@ -23,6 +22,11 @@ type Config struct {
 	APIKey      string
 	DisplayName string
 	Roles       []string
+}
+
+// TODO: fetch config from S3, EFS, ...
+func fetch() ([]byte, error) {
+	return nil, nil
 }
 
 func parseConfig(data []byte) (*rawConfig, error) {
@@ -46,17 +50,9 @@ func parseRoles(value string) []string {
 
 // Load ...
 func Load() (*Config, error) {
-	data, err := ioutil.ReadFile("/var/tmp/.mackerel/config.yaml")
-	if err != nil {
-		return nil, err
-	}
-
-	rawConf, err := parseConfig(data)
-	if err != nil {
-		return nil, err
-	}
-
-	var conf *Config
+	var conf Config
+	// TODO: fetch raw config
+	rawConf := &rawConfig{}
 
 	var urlString string
 	if rawConf.APIBase == "" {
@@ -89,5 +85,5 @@ func Load() (*Config, error) {
 		conf.Roles = rawConf.Roles
 	}
 
-	return conf, nil
+	return &conf, nil
 }
