@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/pyto86pri/mackerel-lambda-agent/cmd/agent"
+	"github.com/pyto86pri/mackerel-lambda-agent/cmd/config"
 	"github.com/pyto86pri/mackerel-lambda-agent/cmd/extensions"
 	"github.com/pyto86pri/mackerel-lambda-agent/cmd/libs"
 	"github.com/pyto86pri/mackerel-lambda-agent/cmd/metrics"
@@ -31,6 +32,7 @@ type MetaData struct {
 type App struct {
 	Version          string
 	Revision         string
+	Config           *config.Config
 	MackerelClient   *mackerel.Client
 	ExtensionsClient *extensions.Client
 	Agent            *agent.Agent
@@ -82,8 +84,7 @@ func (app *App) init() (err error) {
 	region := os.Getenv("AWS_REGION")
 	functionName := os.Getenv("AWS_LAMBDA_FUNCTION_NAME")
 	functionArn := fmt.Sprintf("arn:aws:lambda:%s:%s:function:%s", region, accountID, functionName)
-	// Everytime create new host and retire on shutdown
-	app.hostID, err = app.MackerelClient.CreateHost(&mackerel.CreateHostParam{
+	param := &mackerel.CreateHostParam{
 		Name: environmentID, // or function name + environment id
 		Meta: mackerel.HostMeta{
 			AgentName:     "mackerel-lambda-agent",
@@ -98,7 +99,13 @@ func (app *App) init() (err error) {
 				},
 			},
 		},
-	})
+	}
+	if app.Config.DisplayName != "" {
+		param.DisplayName = app.Config.DisplayName
+	}
+	param.RoleFullnames = app.Config.Roles
+	// Everytime create new host and retire on shutdown
+	app.hostID, err = app.MackerelClient.CreateHost(param)
 	if err != nil {
 		return
 	}
@@ -148,7 +155,7 @@ func (app *App) flushOnce() {
 	values := libs.MapReduce(app.Bucket.Flush(), math.Max)
 	err := app.sendMetrics(now, values)
 	if err != nil {
-		log.Error(err)
+		log.Error("Failed to post metrics", err)
 	}
 }
 
@@ -178,7 +185,7 @@ func (app *App) loop() {
 		case "SHUTDOWN":
 			return
 		default:
-			log.Warning("Unknown event type")
+			log.Warning("Unknown event type", event)
 		}
 	}
 }
@@ -187,12 +194,12 @@ func (app *App) loop() {
 func (app *App) Run(ctx context.Context) {
 	_, err := app.ExtensionsClient.Register()
 	if err != nil {
-		log.Fatal("Failed to register")
+		log.Fatal("Failed to register", err)
 	}
 	err = app.init()
 	if err != nil {
 		app.ExtensionsClient.InitError(&extensions.ErrorRequest{})
-		log.Fatal("Failed to initialize")
+		log.Fatal("Failed to initialize", err)
 	}
 	ctx, cancel := context.WithCancel(ctx)
 	go app.collectMetrics(ctx, 1*time.Second)
@@ -201,7 +208,7 @@ func (app *App) Run(ctx context.Context) {
 	cancel()
 	err = app.MackerelClient.RetireHost(app.hostID)
 	if err != nil {
-		log.Fatal("Failed to retire")
+		log.Error("Failed to retire", err)
 	}
 	// TODO: wait for workers
 	os.Exit(0)
