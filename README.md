@@ -1,4 +1,4 @@
-# [WIP] mackerel-agent-lambda
+# [WIP] mackerel-lambda-agent
 
 A monitoring agent of [Mackerel](https://mackerel.io/) for AWS Lambda.
 
@@ -17,6 +17,6 @@ $ sam deploy --guided
 ## Note
 - AWS Lambda Extensions runs on the same execution environment as Lambda functions. So it can impact function performance.
 - Following are overhead estimations;
-  - CPU overhead          : ?
+  - CPU overhead          : ? (Should not so heavy)
   - Memory overhead       : ~70MB (Working on decreasing)
   - Duration time overhead: ~1msec

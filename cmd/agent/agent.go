@@ -4,7 +4,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/pyto86pri/mackerel-agent-lambda/cmd/metrics"
+	"github.com/pyto86pri/mackerel-lambda-agent/cmd/metrics"
 
 	log "github.com/sirupsen/logrus"
 )

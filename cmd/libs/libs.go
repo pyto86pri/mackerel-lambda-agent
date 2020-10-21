@@ -1,7 +1,7 @@
 package libs
 
 import (
-	"github.com/pyto86pri/mackerel-agent-lambda/cmd/metrics"
+	"github.com/pyto86pri/mackerel-lambda-agent/cmd/metrics"
 )
 
 // Map ...

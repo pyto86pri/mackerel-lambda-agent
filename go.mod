@@ -1,4 +1,4 @@
-module github.com/pyto86pri/mackerel-agent-lambda
+module github.com/pyto86pri/mackerel-lambda-agent
 
 go 1.14
 

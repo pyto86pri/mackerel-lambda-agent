@@ -9,10 +9,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/pyto86pri/mackerel-agent-lambda/cmd/agent"
-	"github.com/pyto86pri/mackerel-agent-lambda/cmd/extensions"
-	"github.com/pyto86pri/mackerel-agent-lambda/cmd/libs"
-	"github.com/pyto86pri/mackerel-agent-lambda/cmd/metrics"
+	"github.com/pyto86pri/mackerel-lambda-agent/cmd/agent"
+	"github.com/pyto86pri/mackerel-lambda-agent/cmd/extensions"
+	"github.com/pyto86pri/mackerel-lambda-agent/cmd/libs"
+	"github.com/pyto86pri/mackerel-lambda-agent/cmd/metrics"
 
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/sts"
@@ -86,7 +86,7 @@ func (app *App) init() (err error) {
 	app.hostID, err = app.MackerelClient.CreateHost(&mackerel.CreateHostParam{
 		Name: environmentID, // or function name + environment id
 		Meta: mackerel.HostMeta{
-			AgentName:     "mackerel-agent-lambda",
+			AgentName:     "mackerel-lambda-agent",
 			AgentVersion:  app.Version,
 			AgentRevision: app.Revision,
 			Cloud: &mackerel.Cloud{
