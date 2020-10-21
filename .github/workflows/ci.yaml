@@ -1,0 +1,21 @@
+name: CI
+on:
+  push:
+    paths:
+      - ".github/workflows/ci.yml"
+      - "cmd/**"
+jobs:
+  test:
+    runs-on: ubuntu-18.04
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: "1.14"
+      - run: go mod download
+      - run: make fmt
+      - run: make test
+      - run: make build
