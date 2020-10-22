@@ -20,6 +20,7 @@ func New() *Agent {
 		gs: []metrics.Generator{
 			&metrics.CPUGenerator{Interval: 1 * time.Second},
 			&metrics.DiskGenerator{Interval: 1 * time.Second},
+			&metrics.FilesystemGenerator{},
 			&metrics.MemoryGenerator{},
 			&metrics.NetworkGenerator{},
 			&metrics.LoadavgGenerator{},

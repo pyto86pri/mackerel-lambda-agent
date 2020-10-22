@@ -64,6 +64,7 @@ func getEnvironmentID() (string, error) {
 func (app *App) init() (err error) {
 	err = app.MackerelClient.CreateGraphDefs([]*mackerel.GraphDefsParam{
 		metrics.CPUGraphDefs,
+		metrics.FilesystemGraphDefs,
 		metrics.DiskGraphDefs,
 		metrics.LoadavgGraphDefs,
 		metrics.MemoryGraphDefs,
