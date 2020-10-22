@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os/exec"
+	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
@@ -30,8 +31,10 @@ func (g *FilesystemGenerator) Generate() (Values, error) {
 	for _, filesystem := range filesystems {
 		// AWS Lambda only allows to use "/tmp"
 		if filesystem.Mounted == "/tmp" {
-			values["custom.aws.lambda.extensions.filesystem.tmp.used"] = float64(filesystem.Used) * 1024
-			values["custom.aws.lambda.extensions.filesystem.tmp.available"] = float64(filesystem.Available) * 1024
+			base := filepath.Base(filesystem.Mounted)
+			values["custom.aws.lambda.extensions.filesystem."+base+".used"] = float64(filesystem.Used) * 1024
+			values["custom.aws.lambda.extensions.filesystem."+base+".available"] = float64(filesystem.Available) * 1024
+			values["custom.aws.lambda.extensions.filesystem."+base+".total"] = float64(filesystem.Used+filesystem.Available) * 1024
 		}
 	}
 
@@ -53,6 +56,10 @@ var FilesystemGraphDefs = &mackerel.GraphDefsParam{
 			Name:        "custom.aws.lambda.extensions.filesystem.#.available",
 			DisplayName: "Available",
 			IsStacked:   true,
+		},
+		&mackerel.GraphDefsMetric{
+			Name:        "custom.aws.lambda.extensions.filesystem.#.total",
+			DisplayName: "Total",
 		},
 	},
 }

@@ -36,14 +36,17 @@ var MemoryGraphDefs = &mackerel.GraphDefsParam{
 		&mackerel.GraphDefsMetric{
 			Name:        "custom.aws.lambda.extensions.memory.used",
 			DisplayName: "Used",
+			IsStacked:   true,
 		},
 		&mackerel.GraphDefsMetric{
 			Name:        "custom.aws.lambda.extensions.memory.cached",
 			DisplayName: "Cached",
+			IsStacked:   true,
 		},
 		&mackerel.GraphDefsMetric{
 			Name:        "custom.aws.lambda.extensions.memory.free",
 			DisplayName: "Free",
+			IsStacked:   true,
 		},
 	},
 }
