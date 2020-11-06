@@ -45,18 +45,22 @@ var CPUGraphDefs = &mackerel.GraphDefsParam{
 		&mackerel.GraphDefsMetric{
 			Name:        "custom.aws.lambda.extensions.cpu.user",
 			DisplayName: "User",
+			IsStacked:   true,
 		},
 		&mackerel.GraphDefsMetric{
 			Name:        "custom.aws.lambda.extensions.cpu.nice",
 			DisplayName: "Nice",
+			IsStacked:   true,
 		},
 		&mackerel.GraphDefsMetric{
 			Name:        "custom.aws.lambda.extensions.cpu.system",
 			DisplayName: "System",
+			IsStacked:   true,
 		},
 		&mackerel.GraphDefsMetric{
 			Name:        "custom.aws.lambda.extensions.cpu.idle",
 			DisplayName: "Idle",
+			IsStacked:   true,
 		},
 	},
 }
